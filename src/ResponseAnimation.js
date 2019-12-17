@@ -31,30 +31,84 @@ const generateBezierPath = (start, end) =>
   `M${start.x},${start.y} Q${randomCoord()} ${end.x},${end.y}`;
 
 class ResponseAnimation {
-  constructor(
-    rootNode = document.body,
-    response,
-    start = startPoint,
-    end = endPoint
-  ) {
-    this.rootNode = rootNode;
+  constructor(rootNodeId, response, start = startPoint, end = endPoint) {
+    this.rootNode = document.getElementById(rootNodeId) || document.body;
     this.response = response;
     this.startCoords = start;
     this.endCoords = end;
+    this.roadPathAnimation = this.generateRoadPath();
   }
 
-  static newPath() {}
+  static generateRoadPath() {
+    const road = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    road.style = {
+      height: "100vh",
+      width: "100vw",
+      position: "absolute",
+      strokeWidth: 0,
+      fill: "none"
+    };
+    this.rootNode.appendChild(road);
+
+    const roadPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    roadPath.setAttributeNS(null, "id", "road");
+    roadPath.setAttributeNS(
+      null,
+      "d",
+      generateBezierPath(startPoint, endPoint)
+    );
+    road.appendChild(roadPath);
+    return anime.path("#road");
+  }
+
+  static createDot(x, y, r, fill, parentNode) {
+    const dot = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "circle"
+    );
+    dot.setAttributeNS(null, "cx", x);
+    dot.setAttributeNS(null, "cy", y);
+    dot.setAttributeNS(null, "r", r);
+    dot.setAttributeNS(null, "fill", fill);
+
+    parentNode.appendChild(dot);
+  }
+
+  static generateDotExplosion(qty) {
+    for (let i = 0; i < qty; i++) {
+      const r = anime.random(0, innerHeight / 2);
+      const alpha = Math.random() * (2 * Math.PI - 0) + 2 * Math.PI;
+      const x = r * Math.cos(alpha) + innerWidth / 2;
+      const y = r * Math.sin(alpha) + innerHeight / 2;
+      this.createDot(
+        x,
+        y,
+        0,
+        null,
+        document.getElementById("clipPathExplosion")
+      );
+    }
+  }
+
+  static generateFrameParticles(qty) {
+    for (let i = 0; i < qty; i++) {
+      const r = anime.random(0, 180);
+      const alpha = Math.random() * (2 * Math.PI - 0) + 2 * Math.PI;
+      const x = r * Math.cos(alpha) + 240;
+      const y = r * Math.sin(alpha) + 240;
+      this.createDot(
+        x,
+        y,
+        anime.random(1, 8),
+        FRAME_PARTICLES_COLORS[anime.random(0, 5)],
+        document.getElementById("clgFrame")
+      );
+    }
+  }
 }
-
-const newpath = document.createElementNS(
-  document.getElementById("road").namespaceURI,
-  "path"
-);
-newpath.setAttributeNS(null, "id", "road");
-newpath.setAttributeNS(null, "d", generateBezierPath(startPoint, endPoint));
-document.getElementById("road").appendChild(newpath);
-
-const path = anime.path("#road path");
 
 generateFrameParticles(FRAME_DOT_QTY);
 generateDotExplosion(EXPLOSION_DOT_QTY);
@@ -124,8 +178,8 @@ animation
   .add(
     {
       targets: "#clgFrame",
-      translateX: path("x"),
-      translateY: path("y"),
+      translateX: pathAnimation("x"),
+      translateY: pathAnimation("y"),
       scale: 0.6,
       rotate: 180,
       easing: "linear",
@@ -136,41 +190,5 @@ animation
   .add({
     rotate: 720
   });
-
-function createDot(x, y, r, fill, parentNode) {
-  const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  dot.setAttributeNS(null, "cx", x);
-  dot.setAttributeNS(null, "cy", y);
-  dot.setAttributeNS(null, "r", r);
-  dot.setAttributeNS(null, "fill", fill);
-
-  parentNode.appendChild(dot);
-}
-
-function generateDotExplosion(qty) {
-  for (let i = 0; i < qty; i++) {
-    const r = anime.random(0, innerHeight / 2);
-    const alpha = Math.random() * (2 * Math.PI - 0) + 2 * Math.PI;
-    const x = r * Math.cos(alpha) + innerWidth / 2;
-    const y = r * Math.sin(alpha) + innerHeight / 2;
-    createDot(x, y, 0, null, document.getElementById("clipPathExplosion"));
-  }
-}
-
-function generateFrameParticles(qty) {
-  for (let i = 0; i < qty; i++) {
-    const r = anime.random(0, 180);
-    const alpha = Math.random() * (2 * Math.PI - 0) + 2 * Math.PI;
-    const x = r * Math.cos(alpha) + 240;
-    const y = r * Math.sin(alpha) + 240;
-    createDot(
-      x,
-      y,
-      anime.random(1, 8),
-      FRAME_PARTICLES_COLORS[anime.random(0, 5)],
-      document.getElementById("clgFrame")
-    );
-  }
-}
 
 document.querySelector("#restart").onclick = animation.restart;

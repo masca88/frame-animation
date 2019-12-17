@@ -1,6 +1,7 @@
 import anime from "animejs";
 import { take } from "lodash";
 import "./styles.less";
+import ClgAssistant from "./ClgAssitant";
 const { innerWidth, innerHeight } = window;
 
 const frameParticlesColors = [
@@ -160,3 +161,11 @@ function generateFrameParticles(qty) {
 }
 
 document.querySelector("#restart").onclick = animation.restart;
+
+const clgAssistant = new ClgAssistant(
+  "frameClassTest",
+  { x: 10, y: 200 },
+  { x: 600, y: 400 }
+);
+
+console.log(clgAssistant);
