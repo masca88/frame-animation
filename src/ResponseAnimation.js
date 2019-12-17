@@ -2,8 +2,9 @@ import anime from "animejs";
 import { take } from "lodash";
 import "./styles.less";
 const { innerWidth, innerHeight } = window;
-
-const frameParticlesColors = [
+const FRAME_DOT_QTY = 150;
+const EXPLOSION_DOT_QTY = 200;
+const FRAME_PARTICLES_COLORS = [
   "#578ad4",
   "#4e92d7",
   "#0eb2e0",
@@ -11,9 +12,6 @@ const frameParticlesColors = [
   "#7562ca",
   "#6f69cc"
 ];
-
-const FRAME_DOT_QTY = 150;
-const EXPLOSION_DOT_QTY = 200;
 
 const startPoint = {
   x: innerWidth / 2,
@@ -31,6 +29,22 @@ const randomCoord = () => {
 
 const generateBezierPath = (start, end) =>
   `M${start.x},${start.y} Q${randomCoord()} ${end.x},${end.y}`;
+
+class ResponseAnimation {
+  constructor(
+    rootNode = document.body,
+    response,
+    start = startPoint,
+    end = endPoint
+  ) {
+    this.rootNode = rootNode;
+    this.response = response;
+    this.startCoords = start;
+    this.endCoords = end;
+  }
+
+  static newPath() {}
+}
 
 const newpath = document.createElementNS(
   document.getElementById("road").namespaceURI,
@@ -153,7 +167,7 @@ function generateFrameParticles(qty) {
       x,
       y,
       anime.random(1, 8),
-      frameParticlesColors[anime.random(0, 5)],
+      FRAME_PARTICLES_COLORS[anime.random(0, 5)],
       document.getElementById("clgFrame")
     );
   }
