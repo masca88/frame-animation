@@ -14,7 +14,7 @@ const frameParticlesColors = [
 ];
 
 const FRAME_DOT_QTY = 150;
-const EXPLOSION_DOT_QTY = 200;
+const EXPLOSION_DOT_QTY = 400;
 
 const startPoint = {
   x: innerWidth / 2,
@@ -72,11 +72,16 @@ animation
   .add({
     rotate: -30
   })
+  .add({
+    targets: ".fake #clgFrame",
+    filter: ["grayscale(0)", "grayscale(1)"]
+  })
   .add(
     {
       targets: "#explosion circle",
       r: [0, () => anime.random(1, 8)],
-      duration: 400,
+      delay: anime.stagger(40, { grid: [14, 5], from: "center" }),
+      duration: 100,
       easing: "linear"
     },
     "-=500"
@@ -86,10 +91,10 @@ animation
       targets: take(document.querySelectorAll("#explosion circle"), 10),
       r: innerWidth > innerHeight ? innerWidth : innerHeight,
       delay: anime.stagger(300, { grid: [14, 5], from: "center" }),
-      duration: 1300,
+      duration: 450,
       easing: "easeInCirc"
     },
-    "-=700"
+    "-=1000"
   )
   // .add(
   //   {
@@ -106,7 +111,7 @@ animation
       targets: ".fake .cls-1",
       fill: "#fff"
     },
-    "-=2100"
+    "-=1600"
   )
   .add(
     {
@@ -136,7 +141,7 @@ function createDot(x, y, r, fill, parentNode) {
 
 function generateDotExplosion(qty) {
   for (let i = 0; i < qty; i++) {
-    const r = anime.random(0, innerHeight / 2);
+    const r = anime.random(0, innerHeight / 4);
     const alpha = Math.random() * (2 * Math.PI - 0) + 2 * Math.PI;
     const x = r * Math.cos(alpha) + innerWidth / 2;
     const y = r * Math.sin(alpha) + innerHeight / 2;
@@ -162,10 +167,10 @@ function generateFrameParticles(qty) {
 
 document.querySelector("#restart").onclick = animation.restart;
 
-const clgAssistant = new ClgAssistant(
-  "frameClassTest",
-  { x: 10, y: 200 },
-  { x: 600, y: 400 }
-);
+// const clgAssistant = new ClgAssistant(
+//   "frameClassTest",
+//   { x: 10, y: 200 },
+//   { x: 600, y: 400 }
+// );
 
-console.log(clgAssistant);
+// console.log(clgAssistant);
