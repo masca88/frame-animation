@@ -35,16 +35,21 @@ class ClgAssistant {
     this.end = end;
     this.startColor = startColor;
     this.endColor = endColor || startColor;
-
-    this.init();
   }
 
   async init() {
-    await this.generateRoadPath();
-    await this.initFrame();
-    await this.generateFrameParticles(FRAME_DOT_QTY);
-    this.particlesAnimation = this.initParticlesAnimation();
-    this.frameAnimation = this.initFrameAnimation();
+    return new Promise(async (resolve, reject) => {
+      try {
+        await this.generateRoadPath();
+        await this.initFrame();
+        await this.generateFrameParticles(FRAME_DOT_QTY);
+        this.particlesAnimation = this.initParticlesAnimation();
+        this.frameAnimation = this.initFrameAnimation();
+        resolve(true);
+      } catch (error) {
+        reject(error);
+      }
+    })
   }
 
   generateRoadPath() {
@@ -131,40 +136,45 @@ class ClgAssistant {
       targets: this.rootNode.querySelectorAll('#clgFrame'),
       easing: 'spring',
       loop: false,
+      autoplay: false,
     });
+    this.initialPosition = {
+      targets: this.rootNode.querySelectorAll('#clgFrame'),
+      translateX: this.start.x,
+      translateY: this.start.y
+    };
+    this.lookLeft = {
+      targets: this.rootNode.querySelectorAll('#clgFrame'),
+      rotate: -30
+    };
+    this.lookRight = {
+      targets: this.rootNode.querySelectorAll('#clgFrame'),
+      rotate: 30
+    };
+    this.changeColor = {
+      targets: this.rootNode.querySelectorAll('#clgFrame .cls-1'),
+      fill: this.endColor
+    };
+    this.move = {
+      targets: this.rootNode.querySelectorAll('#clgFrame'),
+      translateX: this.roadPathAnimation('x'),
+      translateY: this.roadPathAnimation('y'),
+      scale: 0.6,
+      rotate: 180,
+      easing: 'linear',
+      duration: 1500
+    };
+    this.spin = {
+      targets: this.rootNode.querySelectorAll('#clgFrame'),
+      rotate: 720
+    };
     animation
-      .add({
-        translateX: this.start.x,
-        translateY: this.start.y
-      })
-      .add({
-        rotate: 30
-      })
-      .add({
-        rotate: -30
-      })
-      .add(
-        {
-          targets: this.rootNode.querySelectorAll('#clgFrame .cls-1'),
-          fill: this.endColor
-        },
-        '-=2100'
-      )
-      .add(
-        {
-          targets: '#clgFrame',
-          translateX: this.roadPathAnimation('x'),
-          translateY: this.roadPathAnimation('y'),
-          scale: 0.6,
-          rotate: 180,
-          easing: 'linear',
-          duration: 1500
-        },
-        '-=500'
-      )
-      .add({
-        rotate: 720
-      });
+      .add(this.initialPosition)
+      .add(this.lookRight)
+      .add(this.lookLeft)
+      .add(this.changeColor, '-=2100')
+      .add(this.move,'-=500')
+      .add(this.spin);
 
     return animation;
   }

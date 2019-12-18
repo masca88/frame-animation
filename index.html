@@ -6,8 +6,16 @@
   </head>
 
   <body>
-    <div id="app" class="fake">
-      <div id="frameClassTest"></div>
+    <div id="app">
+      <div id="bg"></div>
+      <div id="explosion">
+        <svg id="explosion" height="0" width="0">
+          <defs>
+            <clipPath id="clipPathExplosion" />
+          </defs>
+        </svg>
+      </div>
+      <div id="clg-assistant"></div>
       <div class="action-bar">
         <div class="btn" id="play">Play</div>
         <div class="btn" id="pause">Pause</div>
