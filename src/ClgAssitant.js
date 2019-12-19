@@ -23,14 +23,14 @@ const endPoint = {
 };
 
 class ClgAssistant {
-  constructor(
-    rootNodeId,
+  constructor({
+    id,
     start = startPoint,
     end = endPoint,
     startColor,
     endColor
-  ) {
-    this.rootNode = document.getElementById(rootNodeId) || document.body;
+  }) {
+    this.rootNode = document.getElementById(id) || document.body;
     this.start = start;
     this.end = end;
     this.startColor = startColor;
@@ -86,6 +86,7 @@ class ClgAssistant {
         const rawSvg = await fetch(frameSvg);
         const parser = new DOMParser();
         const svgNode = await parser.parseFromString(await rawSvg.text(), "image/svg+xml");
+        svgNode.documentElement.querySelector('#clgFrame .cls-1').style.fill = this.startColor;
         this.rootNode.appendChild(svgNode.documentElement);
         resolve(true);
       } catch (error) {

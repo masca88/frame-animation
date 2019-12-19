@@ -14,10 +14,14 @@ const centerPoint = {
 };
 
 class Explosion {
-  constructor(rootNodeId, response, center = centerPoint) {
-    this.rootNode = document.getElementById(rootNodeId) || document.body;
-    this.response = response;
+  constructor({
+    id, 
+    color = '#000',
+    center = centerPoint
+  }) {
+    this.rootNode = document.getElementById(id) || document.body;
     this.center = center;
+    this.bgColor = color;
   }
 
   async init() {
@@ -42,8 +46,6 @@ class Explosion {
         clippath.setAttribute('id', 'clipPathExplosion');
         const dots = await this.generateDotExplosion(EXPLOSION_DOT_QTY);
         dots.forEach(element => {
-          console.log(element);
-          
           clippath.appendChild(element);
         });
         defs.appendChild(clippath);
@@ -55,7 +57,7 @@ class Explosion {
           position: absolute;
           height: 100%;
           width: 100%;
-          background: linear-gradient(45deg, #22c1c3 0%, #fdbb2d 100%);
+          background: ${this.bgColor};
           clip-path:url(#clipPathExplosion);
         `);
         this.rootNode.appendChild(bg);

@@ -4,18 +4,16 @@ import ClgAssistant from './ClgAssitant';
 import Explosion from './Explosion';
 import './styles.less';
 
-const clgAssistant = new ClgAssistant(
-  'clg-assistant',
-  { x: window.innerWidth / 2 - 60, y: 50 },
-  { x: window.innerWidth / 2 + 200, y: 400 },
-  '#ddd',
-  '#fff',
-);
+const clgAssistant = new ClgAssistant({
+  id: 'clg-assistant',
+  start: { x: window.innerWidth / 2 - 60, y: 50 },
+  end: { x: window.innerWidth / 2 + 200, y: window.innerHeight - 500 },
+});
 
-const explosion = new Explosion(
-  'explosion',
-  'fake',
-);
+const explosion = new Explosion({
+  id: 'explosion',
+  color: 'linear-gradient(45deg, #22c1c3 0%, #fdbb2d 100%)',
+});
 
 const animation = anime.timeline({
   targets: document.body,
