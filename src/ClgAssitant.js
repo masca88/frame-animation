@@ -56,8 +56,6 @@ class ClgAssistant {
     return new Promise(async (resolve, reject) => {
       try {
         const road = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        road.style.height = '100vh';
-        road.style.width = '100vw';
         road.style.position = 'absolute';
         road.style.strokeWidth = 0;
         road.style.fill = 'none';
@@ -152,9 +150,9 @@ class ClgAssistant {
       rotate: 30
     };
     this.changeColor = {
-      targets: this.rootNode.querySelectorAll('#clgFrame .cls-1'),
+      targets: this.rootNode.querySelector('#clgFrame .cls-1'),
       fill: this.endColor
-    };
+    };    
     this.move = {
       targets: this.rootNode.querySelectorAll('#clgFrame'),
       translateX: this.roadPathAnimation('x'),
@@ -168,11 +166,12 @@ class ClgAssistant {
       targets: this.rootNode.querySelectorAll('#clgFrame'),
       rotate: 720
     };
+
     animation
       .add(this.initialPosition)
       .add(this.lookRight)
       .add(this.lookLeft)
-      .add(this.changeColor, '-=2100')
+      .add(this.changeColor, '-=1000')
       .add(this.move,'-=500')
       .add(this.spin);
 
